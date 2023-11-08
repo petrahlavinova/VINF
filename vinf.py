@@ -74,3 +74,6 @@ while pages_to_crawl:
 
 end = time.time()
 print("Time elapsed: ",end - start)
+
+
+
