@@ -3,6 +3,7 @@ import json
 import re
 import time
 
+
 books = []
 directory = "books_txt_files"
 
@@ -34,26 +35,34 @@ for filename in os.listdir(directory):
             else:
                 author_name = None
 
-            pages_pattern = r'<strong class="col-auto">Počet strán:</strong>\s+(\d+)\s+'
+            
+            category_pattern = r'<span itemprop="name">\s+(.*?)\s+</span>\s+</a>\s+<meta itemprop="position" content="3">'
+            category_match = re.search(category_pattern, html_content)
+            category = category_match.group(1) if category_match else None
+
+            pages_pattern = r'<strong class="col-auto">Počet strán:</strong>\s+(\d+)\s+</li>'
             pages_match = re.search(pages_pattern, html_content)
             number_of_pages = pages_match.group(1) if pages_match else None
 
-            binding_pattern = r'<strong class="col-auto">Väzba:</strong>\s+(.*?)\s+'
+            binding_pattern = r'<strong class="col-auto">Väzba:</strong>\s+(.*?)\s+</li>'
             binding_match = re.search(binding_pattern, html_content)
             binding_type = binding_match.group(1) if binding_match else None
 
-            ean_pattern = r'<strong class="col-auto">EAN:</strong>\s+(\d+)\s+'
+            original_name_pattern = r'<strong class="col-auto">Pôvodný názov:</strong>\s+(.*?)\s+</li>'
+            original_name_match = re.search(original_name_pattern, html_content)
+            original_name = original_name_match.group(1) if original_name_match else None
+
+            ean_pattern = r'<strong class="col-auto">EAN:</strong>\s+(\d+)\s+</li>'
             ean_match = re.search(ean_pattern, html_content)
             ean = ean_match.group(1) if ean_match else None
 
-            language_pattern = r'<strong class="col-auto">Jazyk:</strong>\s+([\w]+)\s+'
+            language_pattern = r'<strong class="col-auto">Jazyk:</strong>\s+([\w]+)\s+</li>'
             language_match = re.search(language_pattern, html_content)
             language = language_match.group(1) if language_match else None
 
-            date_pattern = r'<strong class="col-auto">Dátum vydania:</strong>\s+(\d+\.\s+\w+\s+\d{4})\s+'
+            date_pattern = r'<strong class="col-auto">Dátum vydania:</strong>\s+(\d+\.\s+\w+\s+\d{4})\s+</li>'
             date_match = re.search(date_pattern, html_content)
             publication_date = date_match.group(1) if date_match else None
-
 
             publisher_pattern = r'class="text-dark text-underline">\n\s+(.*?)\s+<\/a>'
             publisher_match = re.search(publisher_pattern, html_content)
@@ -63,14 +72,17 @@ for filename in os.listdir(directory):
         if book_title and author_name and number_of_pages and binding_type and language and publication_date and publisher_name:
             book_info = {
                 "name": book_title,
+                "original_name": original_name,
                 "author": author_name,
+                "category": category,
                 "pages": number_of_pages,
                 "binding_type": binding_type,
                 "language": language,
                 "publisher": publisher_name,
                 "date_published": publication_date
             }
-            #print(book_info)
+            
+            print(book_info)
             books.append(book_info)
 
 
