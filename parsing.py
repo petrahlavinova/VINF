@@ -82,11 +82,11 @@ for filename in os.listdir(directory):
                 "date_published": publication_date
             }
             
-            print(book_info)
+            #print(book_info)
             books.append(book_info)
 
 
-output_file = "book_information.json"
+output_file = "books.json"
 with open(output_file, 'w', encoding='utf-8') as json_file:
     json.dump(books, json_file, ensure_ascii=False, indent=4)
 
