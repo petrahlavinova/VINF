@@ -51,12 +51,16 @@ def indexDocs(books_json_path, writer):
             # Relevant information of book
             name = book.get("name", "")
             author = book.get("author", "")
+            category = book.get("category", "")
             contents = f"{name} {author}"
+            contents2 = f"{name} {category}"
 
             doc = Document()
             doc.add(Field("name", name, t1))
             doc.add(Field("author", author, t1))
+            doc.add(Field("category", category, t1))
             doc.add(Field("contents", contents, t2))
+            doc.add(Field("contents2", contents2, t2))
             writer.addDocument(doc)
 
 lucene.initVM(vmargs=['-Djava.awt.headless=true'])
