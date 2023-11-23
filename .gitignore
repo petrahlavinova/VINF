@@ -1,6 +1,7 @@
 /books_txt_files
 /zaloha
 book_information.json
+additional_book_info.json
 books.json
 indexingM.py
 indexing1.py
