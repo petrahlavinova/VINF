@@ -1,16 +1,35 @@
+// {
+//   "name": "PyLucene Development",
+//   "image": "coady/pylucene",
+//   "customizations": {
+//     "vscode": {
+//       "extensions": ["ms-python.python"],
+//       "settings": {
+//         "python.defaultInterpreterPath": "path/to/venv/bin/python",
+//         "python.linting.enabled": true,
+//         "python.linting.pylintEnabled": true
+//       }
+//     }
+//   },
+//   "appPort": [8000],
+//   "forwardPorts": [8000]
+// }
 {
-  "name": "PyLucene Development",
-  "image": "coady/pylucene",
-  "customizations": {
+    "name": "PyLucene Development",
+    "image": "coady/pylucene",
     "vscode": {
-      "extensions": ["ms-python.python"],
-      "settings": {
-        "python.defaultInterpreterPath": "path/to/venv/bin/python",
-        "python.linting.enabled": true,
-        "python.linting.pylintEnabled": true
-      }
+        "extensions": [
+            "ms-python.python"
+        ],
+        "settings": {
+          //"python.defaultInterpreterPath":"path/to/venv/bin/python",
+            "python.linting.enabled": true,
+            "python.linting.pylintEnabled": true
+        }
+    },
+    "appPort": [8000],
+    "forwardPorts": [8000],
+    "containerEnv": {
+        "DISPLAY": "${localEnv:DISPLAY}"
     }
-  },
-  "appPort": [8000],
-  "forwardPorts": [8000]
-}
+  }

@@ -9,3 +9,12 @@ indexing2.py
 /IndexFiles.index
 /IndexFiles1.index
 books1.json
+__pycache__/spark.cpython-312.pyc
+__pycache__/wikipedia.cpython-312.pyc
+IndexFilesFinal.index/_1.cfe
+.devcontainer/devcontainer.json
+IndexFilesFinal.index/_1.cfs
+IndexFilesFinal.index/_1.si
+IndexFilesFinal.index/segments_2
+IndexFilesFinal.index/write.lock
+books_complete.json

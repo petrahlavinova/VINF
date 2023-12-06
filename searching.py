@@ -1,7 +1,7 @@
-INDEX_DIR = "IndexFiles.index"
+INDEX_DIR = "IndexFilesFinal.index"
 
 import sys, os, lucene
-
+import unittest
 from java.nio.file import Paths
 from org.apache.lucene.analysis.standard import StandardAnalyzer
 from org.apache.lucene.index import DirectoryReader
@@ -26,7 +26,6 @@ def runOneQuery(searcher, analyzer):
         for scoreDoc in scoreDocs:
             doc = searcher.doc(scoreDoc.doc)
             print('Book name:', doc.get("name"), ", Author: ", doc.get("author"))
-
 def runBooleanQuery(searcher, analyzer):
     while True:
         print()
@@ -58,8 +57,25 @@ def runBooleanQuery(searcher, analyzer):
             print('name:', doc.get("name"))
             print('author:', doc.get("author"))
             print('category:', doc.get("category"))
+            print('category info:', doc.get("category_info"))
+            print('______________________')
 
 
+class TestStringMethods(unittest.TestCase):
+
+    def test_upper(self):
+        self.assertEqual('foo'.upper(), 'FOO')
+
+    def test_isupper(self):
+        self.assertTrue('FOO'.isupper())
+        self.assertFalse('Foo'.isupper())
+
+    def test_split(self):
+        s = 'hello world'
+        self.assertEqual(s.split(), ['hello', 'world'])
+        # check that s.split fails when the separator is not a string
+        with self.assertRaises(TypeError):
+            s.split(2)
 
 lucene.initVM(vmargs=['-Djava.awt.headless=true'])
 print('lucene', lucene.VERSION)
@@ -68,4 +84,5 @@ directory = NIOFSDirectory(Paths.get(os.path.join(base_dir, INDEX_DIR)))
 searcher = IndexSearcher(DirectoryReader.open(directory))
 analyzer = StandardAnalyzer()
 runBooleanQuery(searcher, analyzer)
+unittest.main()
 del searcher

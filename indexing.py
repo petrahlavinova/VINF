@@ -10,7 +10,7 @@ from org.apache.lucene.index import \
     FieldInfo, IndexWriter, IndexWriterConfig, IndexOptions
 from org.apache.lucene.store import NIOFSDirectory
 
-INDEX_DIR = "IndexFiles.index"
+INDEX_DIR = "IndexFilesFinal.index"
 
 class Ticker(object):
     def __init__(self):
@@ -52,6 +52,7 @@ def indexDocs(books_json_path, writer):
             name = book.get("name", "")
             author = book.get("author", "")
             category = book.get("category", "")
+            category = book.get("category_info", "")
             contents = f"{name} {author}"
             contents2 = f"{name} {category}"
 
@@ -59,6 +60,7 @@ def indexDocs(books_json_path, writer):
             doc.add(Field("name", name, t1))
             doc.add(Field("author", author, t1))
             doc.add(Field("category", category, t1))
+            doc.add(Field("category_info", category, t1))
             doc.add(Field("contents", contents, t2))
             doc.add(Field("contents2", contents2, t2))
             writer.addDocument(doc)
@@ -66,7 +68,7 @@ def indexDocs(books_json_path, writer):
 lucene.initVM(vmargs=['-Djava.awt.headless=true'])
 print('lucene', lucene.VERSION)
 start = datetime.now()
-books_json_path = "books.json"
+books_json_path = "pipik.json"
 IndexFiles(books_json_path, INDEX_DIR, StandardAnalyzer())
 end = datetime.now()
 print(end - start)
