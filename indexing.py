@@ -72,7 +72,7 @@ def indexDocs(books_json_path, writer):
 lucene.initVM(vmargs=['-Djava.awt.headless=true'])
 print('lucene', lucene.VERSION)
 start = datetime.now()
-books_json_path = "pipik.json"
+books_json_path = "books_complete.json"
 IndexFiles(books_json_path, INDEX_DIR, StandardAnalyzer())
 end = datetime.now()
 print(end - start)
