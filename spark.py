@@ -9,6 +9,7 @@ import json
 import os
 import json
 import sys
+
 # wikipedia.set_lang("sk")
 os.environ['PYSPARK_PYTHON'] = sys.executable
 os.environ['PYSPARK_DRIVER_PYTHON'] = sys.executable
@@ -41,9 +42,11 @@ def new_info(page_url):
         return category_info_clean
         
 
-
+# creating local spark session
 spark_session = SparkSession.builder.master('local[*]').appName('books_full').getOrCreate()
 spark_session.conf.set("spark.sql.legacy.json.allowEmptyString.enabled", True)
+
+# preparation of data - books and additional info
 schema = StructType([
       StructField("name",StringType(),False),
       StructField("original_name",StringType(),True),
@@ -71,14 +74,13 @@ with open('additional_book_info.json') as json_file:
 info = spark_session.createDataFrame(data=data2,schema=schema2)
 df = spark_session.createDataFrame(data=data,schema=schema)
 
+# joining dataframes
 result_df =  df.join(info, on="category")
-
 
 json_string_rdd = result_df.toJSON()
 
-import json
-
+# store to json file
 json_data = [json.loads(json_str) for json_str in json_string_rdd.collect()]
-with open("pipik.json", "w",encoding='utf-8') as json_file:
+with open("books_complete.json", "w",encoding='utf-8') as json_file:
     json.dump(json_data, json_file,ensure_ascii=False)
 

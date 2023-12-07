@@ -20,20 +20,22 @@ def IndexFiles(books_json_path, storeDir, analyzer):
     if not os.path.exists(storeDir):
         os.mkdir(storeDir)
 
+    # create a Lucene NIOFSDirectory for storing the index
     store = NIOFSDirectory(Paths.get(storeDir))
     analyzer = LimitTokenCountAnalyzer(analyzer, 1048576)
+     # configuration for IndexWriter
     config = IndexWriterConfig(analyzer)
     config.setOpenMode(IndexWriterConfig.OpenMode.CREATE)
+     # create an IndexWriter
     writer = IndexWriter(store, config)
 
     print('Start of Indexing...')
     indexDocs(books_json_path, writer)
-    print('Commit index...',)
     writer.commit()
     writer.close()
-    print('Done')
 
 def indexDocs(books_json_path, writer):
+     # define field types
     t1 = FieldType()
     t1.setStored(True)
     t1.setTokenized(False)
@@ -47,8 +49,9 @@ def indexDocs(books_json_path, writer):
     with open(books_json_path, 'r', encoding='utf-8') as json_file:
         books = json.load(json_file)
 
+         # creating Lucene document for indexing for each book
         for book in books:
-            # Relevant information of book
+            # relevant information of book
             name = book.get("name", "")
             author = book.get("author", "")
             category = book.get("category", "")
@@ -56,6 +59,7 @@ def indexDocs(books_json_path, writer):
             contents = f"{name} {author}"
             contents2 = f"{name} {category}"
 
+            # creating a Lucene document
             doc = Document()
             doc.add(Field("name", name, t1))
             doc.add(Field("author", author, t1))

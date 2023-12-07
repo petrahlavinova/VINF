@@ -17,6 +17,7 @@ for filename in os.listdir(directory):
         with open(file_path, 'r', encoding='utf-8') as file:
             html_content = file.read()
                     
+            # parsing the attributes from html page of book on pantarhei website
             title_pattern = r'<h1 class="mb-1" itemprop="name">\s+(.*?)\s+</h1>'
             title_match = re.search(title_pattern, html_content)
             book_title = title_match.group(1) if title_match else None
@@ -68,7 +69,7 @@ for filename in os.listdir(directory):
             publisher_match = re.search(publisher_pattern, html_content)
             publisher_name = publisher_match.group(1) if publisher_match else None
 
-        
+        # creating a dictionary with parsed data
         if book_title and author_name and number_of_pages and binding_type and language and publication_date and publisher_name:
             book_info = {
                 "name": book_title,
@@ -85,7 +86,7 @@ for filename in os.listdir(directory):
             #print(book_info)
             books.append(book_info)
 
-
+# storing the parsed data in json file
 output_file = "books.json"
 with open(output_file, 'w', encoding='utf-8') as json_file:
     json.dump(books, json_file, ensure_ascii=False, indent=4)

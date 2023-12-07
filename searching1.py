@@ -13,7 +13,7 @@ from org.apache.lucene.search import IndexSearcher
 import tkinter as tk
 from tkinter import Label, Entry, Button, Text, Scrollbar, END
 
-
+# this is search with gui, but I had problem with display (windows issues probably)
 def runBooleanQuery(searcher, analyzer, name_query, category_query, result_text):
     result_text.delete(1.0, END)  # Clear previous results
 

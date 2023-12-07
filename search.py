@@ -2,6 +2,7 @@ import json
 import tkinter as tk
 from tkinter import scrolledtext
 
+# this is search with gui that only searches in our datas before indexing and merging
 def search_books(query):
     try:
         with open('book_information.json', 'r', encoding='utf-8') as file:
