@@ -63,19 +63,68 @@ def runBooleanQuery(searcher, analyzer):
 
 class TestStringMethods(unittest.TestCase):
 
-    def test_upper(self):
-        self.assertEqual('foo'.upper(), 'FOO')
+    def test_find_boolean_query1(self):
+        name_parser = QueryParser("contents2", analyzer)
+        name_query_obj = name_parser.parse('Ohnivé znamenie')
+        category_parser = QueryParser("contents2", analyzer)
+        category_query_obj = category_parser.parse('Beletria')
+        boolean_query = BooleanQuery.Builder()
+        boolean_query.add(name_query_obj, BooleanClause.Occur.MUST)
+        boolean_query.add(category_query_obj, BooleanClause.Occur.MUST)
+        scoreDoc = searcher.search(boolean_query.build(), 1).scoreDocs
+        doc = searcher.doc(scoreDoc[0].doc)
+        self.assertTrue('Ohnivé znamenie' in doc.get("name"))
 
-    def test_isupper(self):
-        self.assertTrue('FOO'.isupper())
-        self.assertFalse('Foo'.isupper())
+    def test_find_one_query1(self):
+        query = QueryParser("contents", analyzer).parse('Ohnivé znamenie')
+        scoreDoc = searcher.search(query, 1).scoreDocs
+        doc = searcher.doc(scoreDoc[0].doc)
+        self.assertTrue('Ohnivé znamenie' in doc.get("name"))
+    
+    def test_find_boolean_query2(self):
+        name_parser = QueryParser("contents2", analyzer)
+        name_query_obj = name_parser.parse('Pečie celé Slovensko 2')
+        category_parser = QueryParser("contents2", analyzer)
+        category_query_obj = category_parser.parse('Kuchárske knihy')
+        boolean_query = BooleanQuery.Builder()
+        boolean_query.add(name_query_obj, BooleanClause.Occur.MUST)
+        boolean_query.add(category_query_obj, BooleanClause.Occur.MUST)
+        scoreDoc = searcher.search(boolean_query.build(), 1).scoreDocs
+        doc = searcher.doc(scoreDoc[0].doc)
+        self.assertTrue('Pečie celé Slovensko 2' in doc.get("name"))
 
-    def test_split(self):
-        s = 'hello world'
-        self.assertEqual(s.split(), ['hello', 'world'])
-        # check that s.split fails when the separator is not a string
-        with self.assertRaises(TypeError):
-            s.split(2)
+    def test_find_one_query2(self):
+        count = 0
+        query = QueryParser("contents", analyzer).parse('Harry Potter')
+        scoreDocs = searcher.search(query, 20).scoreDocs
+        for scoreDoc in scoreDocs:
+            doc = searcher.doc(scoreDoc.doc)
+            if 'Harry Potter' in doc.get("name"):
+                count += 1
+        self.assertTrue(len(doc.get("name")) > 8)
+
+
+    def test_not_find_boolean_query(self):
+        name_parser = QueryParser("contents2", analyzer)
+        name_query_obj = name_parser.parse('Bonifác')
+        category_parser = QueryParser("contents2", analyzer)
+        category_query_obj = category_parser.parse('Beletria')
+        boolean_query = BooleanQuery.Builder()
+        boolean_query.add(name_query_obj, BooleanClause.Occur.MUST)
+        boolean_query.add(category_query_obj, BooleanClause.Occur.MUST)
+        scoreDoc = searcher.search(boolean_query.build(), 1).scoreDocs
+        self.assertEqual(len(scoreDoc), 0)
+
+    def test_not_find_one_query(self):
+        query = QueryParser("contents", analyzer).parse('Bonifác')
+        scoreDoc = searcher.search(query, 1).scoreDocs
+        self.assertEqual(len(scoreDoc), 0)
+
+    def test_not_find_one_query2(self):
+        query = QueryParser("contents", analyzer).parse('Ventilátor')
+        scoreDoc = searcher.search(query, 1).scoreDocs
+        self.assertEqual(len(scoreDoc), 0)
+
 
 lucene.initVM(vmargs=['-Djava.awt.headless=true'])
 print('lucene', lucene.VERSION)
@@ -83,6 +132,11 @@ base_dir = os.path.dirname(os.path.abspath(sys.argv[0]))
 directory = NIOFSDirectory(Paths.get(os.path.join(base_dir, INDEX_DIR)))
 searcher = IndexSearcher(DirectoryReader.open(directory))
 analyzer = StandardAnalyzer()
-runBooleanQuery(searcher, analyzer)
-unittest.main()
+while True:
+    command = input("Choose one from \n1: One query\n2: Boolean query\n3: Unit tests\n4: Exit")
+    if command == '1': runOneQuery(searcher, analyzer)
+    elif command == '2': runBooleanQuery(searcher, analyzer)
+    elif command == '3': unittest.main()
+    elif command == '4': break
+    else: print('Wrong input!')
 del searcher
